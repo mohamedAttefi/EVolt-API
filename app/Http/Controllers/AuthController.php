@@ -19,7 +19,7 @@ class AuthController extends Controller
             'password' => Hash::make($request['password']),
         ]);
 
-        $token = $user->createToken('auth_token')->accessToken;
+        $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json(['token' => $token, 'user' => $user], 201);
     }
@@ -31,7 +31,7 @@ class AuthController extends Controller
         ]);
 
         if(Auth::attempt($credentials)){
-        $token = Auth::user()->createToken('auth_token')->accessToken;
+        $token = Auth::user()->createToken('auth_token')->plainTextToken;
         return response()->json(['token' => $token, 'user' => Auth::user()], 201);
         }
     }

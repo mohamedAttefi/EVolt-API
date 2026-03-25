@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ReservationController extends Controller
 {
@@ -12,23 +13,19 @@ class ReservationController extends Controller
      */
     public function index()
     {
-        return response()->json(['resevrations' => Reservation::all()]);
+        $reservations = Reservation::paginate(15);
+        return response()->json(['reservations' => $reservations]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreReservationRequest $request)
     {
-        Reservation::create([
-            'user_id' => $request->user_id,
-            'charging_station_id' => $request->charging_station_id,
-            'start_time' => $request->start_time,
-            'duration' => $request->duration,
-            'status' => $request->status
-        ]);
-
-        return response()->json(['message' => 'reservation created successfully']);
+        $validated = $request->validated();
+        // Use validated data
+        $reservation = Reservation::create($validated);
+        return response()->json(['reservation' => $reservation], 201);
     }
 
     /**
